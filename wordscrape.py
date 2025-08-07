@@ -1,0 +1,138 @@
+from urllib.request import urlopen
+from urllib.parse import urlparse
+from urllib.request import Request
+
+from datetime import datetime
+import json
+
+URLS = ('https://www.fiveforks.com/wordle/',)
+ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+class AllPastAnswersScraper:
+    
+    def __init__(self, *, index):
+
+        self.url = URLS[index]
+
+        self.req = Request(self.url)
+        self.req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7')
+
+        self.lines = list(urlopen(self.req))
+        self.url_name = urlparse(self.url).hostname
+
+    def extract_past_answers(self):
+        match self.url_name:
+            case 'www.fiveforks.com':
+                self.past_answers = fiveforks_archive(self.lines)
+            case 'www.rockpapershotgun.com':
+                self.past_answers = rps_archive(self.lines)
+            case 'www.nytimes.com':
+                self.past_answers = nyt_archive(self.lines)
+    
+    def store_past_answers(self, *, dir='word_data', name='past_answers.txt'):
+        '''Exception raised if past_answers isn't a subset of scraped past answers'''
+
+        new_list = list(map(lambda x: x+'\n', self.past_answers))
+        with open(f'{dir}/{name}', 'r') as f:
+            old_list = list(f)
+        
+        if not len(set(new_list)) == len(new_list) or not len(set(old_list)) == len(old_list):
+            raise Exception('Duplicates in list')
+        
+        if not set(old_list).issubset(set(new_list)) :
+            raise Exception('Old list is not subset')
+        
+        if set(old_list) == set(new_list):
+            print('All past words are already recorded')
+            return
+
+        with open(dir+'/'+name, 'w') as f:
+            try:
+                i = input(f'Add {len(set(new_list) - set(old_list))} to {dir}/{name}? Y/N ' )
+            except Exception:
+                print('Aborted') 
+            else:
+                if i in {'Y', 'y'}: 
+                    f.write(''.join(new_list))
+                    print('Done')
+
+def store():
+    x = AllPastAnswersScraper(index=0)
+    x.extract_past_answers()
+    
+class TodaysWordle:
+    
+    def __init__(self):
+        self.url = 'https://www.nytimes.com/svc/wordle/v2/' + formatted_date() + '.json'
+
+    def get_wordle(self):
+        self.dat = json.loads(list(urlopen(self.url))[0])
+        self.todays_wordle = self.dat['solution']
+        return self.todays_wordle
+    
+    def store_todays_wordle(self, *, dir='word_data', name='todays_wordle'):
+        #check for name conflict
+        self.get_wordle()
+        with open(dir+'/'+name+'.txt', 'w') as f:
+            f.write(self.todays_wordle)
+
+class UpdatePastAnswers:
+    '''Update archive instead of scraping the whole list.'''
+
+#store dates
+def fiveforks_archive(lines):
+    if b'CIGAR 0 06/19/21</div>\n' not in lines:
+        raise Exception('Bad data')
+    
+    #decoding to ascii doesn't work?
+    lines = list(map(lambda x: x.decode(), lines))
+    
+    j = lines.index('CIGAR 0 06/19/21</div>\n')
+    lines = lines[0:j+1]
+    lines.reverse()
+    
+    z = list(map(lambda x: set(x[0:5]).issubset(set(ALPHA)) or x[6:7].isdigit(), lines))
+    del lines[z.index(False):]
+
+    j = dict(map(lambda t: (t[0:5].lower(), t[len(t)-15: len(t)-7]), lines))
+    
+    with open('word_data/word_dates.json', 'w') as f:
+        json.dump(j, f)
+
+    return list(map(lambda x: x[0:5].lower(), lines))
+
+def update_future_answers(*, dir='word_data', name='future_answers'):
+    '''Leaves out today's wordle (for now)'''
+
+    with open(f'{dir}/{name}.txt', 'r') as f:
+        a = set(f)
+    
+    with open(f'{dir}/past_answers.txt', 'r') as f:
+        b = set(f)
+
+    try:
+        i = input(f'Remove {len(a&b)} words? Y/N ')
+    except Exception:
+        print('Aborted')
+    else: 
+        if i in {'Y', 'y'}:
+            with open(f'{dir}/{name}.txt', 'w') as f:
+                f.write(''.join(a - b))
+
+def lookup():
+    pass 
+
+def validate():
+    '''Checks that word lists have the correct sizes and are without duplicates. Checks if past_answers is correct length, etc.'''
+
+def rps_archive(lines):
+    return []
+
+def nyt_archive(lines):
+    return []
+
+def formatted_date():
+    return datetime.today().strftime('%Y-%m-%d')
+
+def nyt_verify():
+    pass
