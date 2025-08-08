@@ -9,7 +9,7 @@ shuffled_real_wordles.txt -> 2315 wordle answers i.e. future_answers on day 0
 
 import list_operations as op
 import wordscrape as scrape
-import optimizer
+import optimizer, verify, time
 
 def content_dictionary(file_names, /, *, dir='word_data'):
 
@@ -37,6 +37,12 @@ def update_lists():
 def get_ideal_triple(future_answers):
     return optimizer.IdealTriple(future_answers).ideal_triple()
 
+def verify_data():
+    start = time.time()
+    verify.WordListManager().check_sets()
+    verify.WordListManager().check_lengths()
+    print(time.time() - start )
+
 if __name__ == '__main__':
     import sys
     if len(sys.argv) == 1:
@@ -49,9 +55,12 @@ if __name__ == '__main__':
     FILES = ('combined_wordlist.txt', 'official_allowed_guesses.txt', 'past_answers.txt', 'shuffled_real_wordles.txt', 'discrepancies.txt', 'future_answers.txt')
     cd = content_dictionary(FILES) 
 
+    verify_data()
 
 
- 
+#docstring updater
 #upload word_data to github
 #compile list of all allowed guesses not in a common dictionary
 #probability updater
+#discrepancy updater
+#add requirementes

@@ -61,3 +61,5 @@ def count_similarity(triples, l):
                 count+= (t[0][i]+t[1][i]+t[2][i]).count(w[i])
         x.append((t, count))
     return sorted(x, key=lambda x: x[1])[::-1]
+
+#first 5 most common letters should compose the first word, next 5 etc

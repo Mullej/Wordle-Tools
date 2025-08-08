@@ -1512,3 +1512,4 @@ lumpy
 rigid
 stork
 groan
+coral
