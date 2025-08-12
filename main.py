@@ -45,12 +45,15 @@ def verify_data():
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) == 1:
-        pass
-    elif sys.argv[1] == 'update_lists':
-        update_lists()
-    else:
-        print('Unrecognized arguments')
+    
+    if len(sys.argv) >= 2:
+        match sys.argv[1]:
+            case 'update_lists':
+                update_lists()
+            case 'commands':
+                print('update_lists')
+            case _:
+                print('Unrecognized arguments')
 
     FILES = ('combined_wordlist.txt', 'official_allowed_guesses.txt', 'past_answers.txt', 'shuffled_real_wordles.txt', 'discrepancies.txt', 'future_answers.txt')
     cd = content_dictionary(FILES) 
