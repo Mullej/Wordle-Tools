@@ -9,7 +9,7 @@ shuffled_real_wordles.txt -> 2315 wordle answers i.e. future_answers on day 0
 
 import list_operations as op
 import wordscrape as scrape
-import optimizer, verify, time
+import optimizer, verify
 
 def content_dictionary(file_names, /, *, dir='word_data'):
 
@@ -38,12 +38,12 @@ def get_ideal_triple(future_answers):
     return optimizer.IdealTriple(future_answers).ideal_triple()
 
 def verify_data():
-    start = time.time()
-    verify.WordListManager().check_sets()
-    verify.WordListManager().check_lengths()
-    print(time.time() - start )
+    v = verify.WordListManager()
+    v.check_sets()
+    v.check_lengths()
 
 if __name__ == '__main__':
+    verify_data()
     import sys
     
     if len(sys.argv) >= 2:
@@ -59,6 +59,7 @@ if __name__ == '__main__':
     cd = content_dictionary(FILES) 
 
     verify_data()
+    print(True)
 
 
 #docstring updater
