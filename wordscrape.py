@@ -55,6 +55,8 @@ class AllPastAnswersScraper:
                 if i in {'Y', 'y'}: 
                     f.write(''.join(new_list))
                     print('Done')
+                else:
+                    raise Exception('Aborted')
 
 def store():
     x = AllPastAnswersScraper(index=0)
@@ -115,9 +117,12 @@ def update_future_answers(*, dir='word_data', name='future_answers'):
     except Exception:
         print('Aborted')
     else: 
+
         if i in {'Y', 'y'}:
             with open(f'{dir}/{name}.txt', 'w') as f:
                 f.write(''.join(a - b))
+        else:
+            raise Exception("Aborted")
 
 def lookup():
     pass 
