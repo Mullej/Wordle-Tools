@@ -1520,3 +1520,6 @@ south
 nomad
 kefir
 knell
+level
+matte
+lousy

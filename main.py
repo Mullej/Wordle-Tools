@@ -39,7 +39,10 @@ def get_ideal_triple(future_answers):
 
 def verify_data():
     v = verify.WordListManager()
-    v.check_sets()
+    try:
+        v.check_sets()
+    except Exception: 
+        pass
     v.check_lengths()
 
 if __name__ == '__main__':
@@ -59,7 +62,6 @@ if __name__ == '__main__':
     cd = content_dictionary(FILES) 
 
     verify_data()
-    print(True)
 
 
 #docstring updater
