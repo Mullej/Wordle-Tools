@@ -7,9 +7,9 @@ class IdealTriple:
     def __init__(self, future_answers):
         self.future_answers = future_answers
 
-    def ideal_triple(self):
+    def ideal_triple(self, *, triples=3):
         self.ideals = count_similarity(generate_triples(find_candidates(self.future_answers)), self.future_answers)
-        return self.ideals[0][0]
+        return [self.ideals[x][0] for x in range(triples)]
 
 #maybe use collections module
 def find_candidates(li):
@@ -37,7 +37,7 @@ def find_candidates(li):
 
     return candidates
 
-def generate_triples(candidates):
+def generate_triples(candidates, *, timer=False):
     c = candidates
     start = time.time()
     triples = []
@@ -47,9 +47,9 @@ def generate_triples(candidates):
             for third in range(second+1, len(c)):
                 if op.disjoint(c[first], c[second]) and op.disjoint(c[first], c[third]) and op.disjoint(c[second], c[third]):
                     triples.append((c[first], c[second], c[third]))
-
-    print(time.time()-start)
-    print(f'# of triples: {len(triples)}')
+    if timer:
+        print(time.time()-start)
+        print(f'# of triples: {len(triples)}')
     return triples
 
 def count_similarity(triples, l):

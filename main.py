@@ -15,15 +15,15 @@ def content_dictionary(file_names, /, *, dir='word_data'):
 
     names = tuple(map(lambda s: s[:len(s)-4], file_names))
     
-    l = []
+    word_list = []
     for n in file_names:
         if type(n) is not ''.__class__:
             raise TypeError('file_names content not type str')
         
         with open(dir+'/'+n, 'r') as f:        
-            l.append(tuple(op.format_list(list(f))))
+            word_list.append(tuple(op.format_list(list(f))))
     
-    return dict(zip(names, l))
+    return dict(zip(names, word_list))
     
 
 #needs to update discrepancies
@@ -46,6 +46,9 @@ def verify_data():
     v.check_lengths()
 
 if __name__ == '__main__':
+    FILES = ('combined_wordlist.txt', 'official_allowed_guesses.txt', 'past_answers.txt', 'shuffled_real_wordles.txt', 'discrepancies.txt', 'future_answers.txt')
+    cd = content_dictionary(FILES) 
+
     verify_data()
     import sys
     
@@ -53,13 +56,14 @@ if __name__ == '__main__':
         match sys.argv[1]:
             case 'update_lists':
                 update_lists()
+            case 'get_ideal_triple':
+                print(get_ideal_triple(cd['future_answers']))
             case 'commands':
-                print('update_lists')
+                print('update_lists, get_ideal_triple')
             case _:
                 print('Unrecognized arguments')
 
-    FILES = ('combined_wordlist.txt', 'official_allowed_guesses.txt', 'past_answers.txt', 'shuffled_real_wordles.txt', 'discrepancies.txt', 'future_answers.txt')
-    cd = content_dictionary(FILES) 
+    
 
     verify_data()
 
