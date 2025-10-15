@@ -64,9 +64,8 @@ if __name__ == '__main__':
                 print('Unrecognized arguments')
 
     
-
     verify_data()
-
+    print(get_ideal_triple(cd['future_answers']))
 
 #docstring updater
 #upload word_data to github

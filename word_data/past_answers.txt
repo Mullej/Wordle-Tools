@@ -1575,3 +1575,9 @@ plane
 amuse
 nylon
 annoy
+hardy
+lever
+stack
+wound
+beard
+forum
