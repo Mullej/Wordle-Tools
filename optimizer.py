@@ -9,7 +9,7 @@ class IdealTriple:
 
     def ideal_triple(self, *, triples=3):
         self.ideals = count_similarity(generate_triples(find_candidates(self.future_answers)), self.future_answers)
-        return [self.ideals[x][0] for x in range(triples)]
+        return [self.ideals[x] for x in range(triples)]
 
 #maybe use collections module
 def find_candidates(li):

@@ -29,10 +29,21 @@ def content_dictionary(file_names, /, *, dir='word_data'):
 #needs to update discrepancies
 def update_lists():
     scrape.TodaysWordle().store_todays_wordle()
+
     scraper = scrape.AllPastAnswersScraper(index=0)
     scraper.extract_past_answers()
     scraper.store_past_answers()
+
     scrape.update_future_answers()
+
+def NYT():
+    NYTscraper = scrape.AllPastAnswersScraper(index=1)
+    NYTscraper.extract_past_answers()
+    with open('word_data/past_answers.txt') as f:
+        global pa
+        pa = list(f)
+    global nyt_pastanswers
+    nyt_pastanswers = NYTscraper.past_answers 
 
 def get_ideal_triple(future_answers):
     return optimizer.IdealTriple(future_answers).ideal_triple()
@@ -63,7 +74,7 @@ if __name__ == '__main__':
             case _:
                 print('Unrecognized arguments')
 
-    
+
     verify_data()
     print(get_ideal_triple(cd['future_answers']))
 

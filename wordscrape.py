@@ -1,33 +1,32 @@
 from urllib.request import urlopen
 from urllib.parse import urlparse
 from urllib.request import Request
-
 from datetime import datetime
-import json
+import json, time
 
-URLS = ('https://www.fiveforks.com/wordle/',)
+URLS = ('https://www.fiveforks.com/wordle/','https://www.nytimes.com/svc/wordle/v2/')
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 class AllPastAnswersScraper:
-    
+    '''
+    The scraping object is attached to one specified URL
+    You will need to create anoter instance to access a different site
+    ''' 
     def __init__(self, *, index):
 
         self.url = URLS[index]
-
-        self.req = Request(self.url)
-        self.req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7')
-
-        self.lines = list(urlopen(self.req))
         self.url_name = urlparse(self.url).hostname
+        self.lines = None
 
     def extract_past_answers(self):
         match self.url_name:
             case 'www.fiveforks.com':
+                self.get_lines()
                 self.past_answers = fiveforks_archive(self.lines)
             case 'www.rockpapershotgun.com':
                 self.past_answers = rps_archive(self.lines)
             case 'www.nytimes.com':
-                self.past_answers = nyt_archive(self.lines)
+                self.past_answers = nyt_archive()
     
     def store_past_answers(self, *, dir='word_data', name='past_answers.txt'):
         '''Exception raised if past_answers isn't a subset of scraped past answers'''
@@ -57,11 +56,12 @@ class AllPastAnswersScraper:
                     print('Done')
                 else:
                     raise Exception('Aborted')
-
-def store():
-    x = AllPastAnswersScraper(index=0)
-    x.extract_past_answers()
     
+    def get_lines(self):
+        req = Request(self.url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7')
+        self.lines = list(urlopen(req))
+                
 class TodaysWordle:
     
     def __init__(self):
@@ -124,6 +124,37 @@ def update_future_answers(*, dir='word_data', name='future_answers'):
         else:
             raise Exception("Aborted")
 
+def nyt_archive():
+    wordlist = []
+    s = time.time()
+    for d in DateIterator():
+        req = Request(f'https://www.nytimes.com/svc/wordle/v2/{d}.json')
+        #not sure which is fastest
+        #dict(json.loads(list(urlopen(req))[0])['id']. or maybe create the list first and then convert to json
+        wordlist.append(json.loads(urlopen(req).read())['solution'])
+        
+    print(time.time()-s)
+    return wordlist
+
+class DateIterator:
+
+    def __init__(self):
+        self.start_date_ordinal = 737959
+        self.todays_ordinal = datetime.today().toordinal()
+
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.start_date_ordinal >= self.todays_ordinal:
+            raise StopIteration
+         
+        self.start_date_ordinal += 1
+        return datetime.fromordinal(self.start_date_ordinal).strftime('%Y-%m-%d')
+
+def formatted_date():
+    return datetime.today().strftime('%Y-%m-%d')
+
 def lookup():
     pass 
 
@@ -132,12 +163,6 @@ def validate():
 
 def rps_archive(lines):
     return []
-
-def nyt_archive(lines):
-    return []
-
-def formatted_date():
-    return datetime.today().strftime('%Y-%m-%d')
 
 def nyt_verify():
     pass
