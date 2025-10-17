@@ -43,13 +43,13 @@ class WordListManager:
 
     def check_sets(self):
         if not self.dic['future_answers.txt'] & self.dic['past_answers.txt'] == set({}):
-            raise WordDataError('future_answers.txt and/or past_answers.txt', f'{len(self.dic['future_answers.txt'] & self.dic['past_answers.txt'])}')
+            raise WordDataError('future_answers.txt and/or past_answers.txt', f"{len(self.dic['future_answers.txt'] & self.dic['past_answers.txt'])}")
         
         if not self.dic['official_allowed_guesses.txt'] ^ self.dic['future_answers.txt'] ^ self.dic['past_answers.txt'] | self.dic['discrepancies.txt'] == self.dic['combined_wordlist.txt']:
             raise WordDataError('future_answers.txt, past_answers.txt, and/or discrepancies.txt', 
-                                f'{len((self.dic['official_allowed_guesses.txt'] ^ self.dic['future_answers.txt'] ^ self.dic['past_answers.txt'] | self.dic['discrepancies.txt']) ^ self.dic['combined_wordlist.txt'])}')
+                                f"{len((self.dic['official_allowed_guesses.txt'] ^ self.dic['future_answers.txt'] ^ self.dic['past_answers.txt'] | self.dic['discrepancies.txt']) ^ self.dic['combined_wordlist.txt'])}")
         
         #^ since they should be disjoint
         if not self.dic['shuffled_real_wordles.txt'] ^ self.dic['official_allowed_guesses.txt'] == self.dic['combined_wordlist.txt']:
             raise WordDataError('shuffled_real_wordles.txt and/or official_allowed_guesses.txt', 
-                                f'{len((self.dic['shuffled_real_wordles.txt'] & self.dic['official_allowed_guesses.txt']) ^ self.dic['combined_wordlist.txt'])}')
+                                f"{len((self.dic['shuffled_real_wordles.txt'] & self.dic['official_allowed_guesses.txt']) ^ self.dic['combined_wordlist.txt'])}")
