@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
 
     verify_data()
-    print(get_ideal_triple(cd['future_answers']))
+    print(get_ideal_triple(cd['future_answers'])) 
 
 #docstring updater
 #upload word_data to github
@@ -84,3 +84,4 @@ if __name__ == '__main__':
 #probability updater
 #discrepancy updater
 #add requirementes
+#run updater only if it has the most recent version of the github programs. maybe throw warning when running files 
