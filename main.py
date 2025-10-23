@@ -66,6 +66,7 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
         match sys.argv[1]:
             case 'update_lists':
+                
                 update_lists()
             case 'get_ideal_triple':
                 print(get_ideal_triple(cd['future_answers']))
@@ -79,7 +80,6 @@ if __name__ == '__main__':
     print(get_ideal_triple(cd['future_answers'])) 
 
 #docstring updater
-#upload word_data to github
 #compile list of all allowed guesses not in a common dictionary
 #probability updater
 #discrepancy updater
