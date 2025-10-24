@@ -10,39 +10,53 @@ STR = ("'''\ncombined_wordlist.txt -> {} words accepted by the official wordle g
 
 class DocStringUpdater:
     def __init__(self):
-        self.backup = False
-    pass
+        self.__backedup = False
 
-def get_files_in_dir(*, dir='word_data'):
-    fs = [f for f in os.listdir(f'./{dir}/') if f[-4:]=='.txt']
-    return tuple(fs)
+    def backup_main(self):
+        with open('main.py') as f:
+            x = f.read()
+        with open('main_backup/main.py', 'w') as g:
+            g.write(x)
+        self.__backedup = True
+
+    def create_new_text(self):
+        if self.__backedup == False:
+            print('No backup!')
+            return
+        
+        with open('main.py') as f:
+            old_lines = f.readlines()
+
+        i = self.get_cutoff_index(old_lines)
+        d = self.get_file_sizes_dict()
+        s = STR.format(d['combined_wordlist.txt'], d['discrepancies.txt'], d['future_answers.txt'], d['official_allowed_guesses.txt'], d['past_answers.txt'])
+        new_lines = s+''.join(old_lines[i::])
+        self.new_lines = new_lines
+
+    def write_to_file(self, /, *, f='main.py'):
+        if self.__backedup == False:
+            print('No backup!')
+            return
+        
+        with open(f, 'w') as g:
+            g.write(self.new_lines)
+
+    def get_cutoff_index(self, program_text_as_array):
+        return [i for i in enumerate(program_text_as_array) if i[1] == "'''\n"][1][0]
     
-def get_file_sizes_dict(*, dir='word_data'): 
-    d = {}
-    for n in get_files_in_dir():
-        with open(f'{dir}/{n}') as f:
-            d[n] = len(list(f))
-    return d
+    def get_files_in_dir(self, *, dir='word_data'):
+        fs = [f for f in os.listdir(f'./{dir}/') if f[-4:]=='.txt']
+        return tuple(fs)
 
-def backup_main():
-    with open('main.py') as f:
-        x = f.read()
-    with open('/main_backup/main.py', 'w') as g:
-        g.write(x)
-
-def create_new_text():
-    with open('main.py') as f:
-        old_lines = f.readlines()
+    def get_file_sizes_dict(self, *, dir='word_data'): 
+        d = {}
+        for n in self.get_files_in_dir():
+            with open(f'{dir}/{n}') as f:
+                d[n] = len(list(f))
+        return d
     
-    i = get_cutoff_index(old_lines)
-    d=get_file_sizes_dict()
-    s=STR.format(d['combined_wordlist.txt'], d['discrepancies.txt'], d['future_answers.txt'], d['official_allowed_guesses.txt'], d['past_answers.txt'])
-    new_lines = s+''.join(old_lines[i::])
-    return new_lines
-
-def write_to_file(new_lines, /, *, f='test.py'):
-    with open(f) as g:
-        g.write(new_lines)
-
-def get_cutoff_index(program_text_as_array):
-    return [i for i in enumerate(program_text_as_array) if i[1] == "'''\n"][1][0]
+def update():
+    DSU = DocStringUpdater()
+    DSU.backup_main()
+    DSU.create_new_text()
+    DSU.write_to_file()

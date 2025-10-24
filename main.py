@@ -1,9 +1,9 @@
 '''
 combined_wordlist.txt -> 12972 words accepted by the official wordle game. It's length is equivalent to: |official_allowed_guesses| + |future_answers| + |past_answers| - |discrepancies| = |official_allowed_guesses| + |shuffled_real_wordles|
 discrepancies.txt -> 22 words past that was not supposed to become a wordle, but ended up as one. Thus, these words are a subset of official_allowed_guesses and past_answers.
-future_answers.txt -> 828 words that will become wordles. Equivalent to: combined_wordlist - official_allowed_guesses - past_answers
+future_answers.txt -> 748 words that will become wordles. Equivalent to: combined_wordlist - official_allowed_guesses - past_answers
 official_allowed_guesses.txt -> 10657 allowed guesses game that will never become wordles themselves.
-past_answers.txt -> 1511 new bank of past answers.
+past_answers.txt -> 1592 new bank of past answers.
 shuffled_real_wordles.txt -> 2315 wordle answers i.e. future_answers on day 0
 '''
 
@@ -79,7 +79,6 @@ if __name__ == '__main__':
     verify_data()
     print(get_ideal_triple(cd['future_answers'])) 
 
-#docstring updater
 #compile list of all allowed guesses not in a common dictionary
 #probability updater
 #discrepancy updater

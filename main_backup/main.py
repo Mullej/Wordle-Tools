@@ -66,9 +66,10 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
         match sys.argv[1]:
             case 'update_lists':
+                
                 update_lists()
             case 'get_ideal_triple':
-                print(get_ideal_triple(cd['futuremain.py_answers']))
+                print(get_ideal_triple(cd['future_answers']))
             case 'commands':
                 print('update_lists, get_ideal_triple')
             case _:
