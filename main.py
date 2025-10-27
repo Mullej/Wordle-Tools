@@ -66,7 +66,6 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
         match sys.argv[1]:
             case 'update_lists':
-                
                 update_lists()
             case 'get_ideal_triple':
                 print(get_ideal_triple(cd['future_answers']))
@@ -79,6 +78,7 @@ if __name__ == '__main__':
     verify_data()
     print(get_ideal_triple(cd['future_answers'])) 
 
+#add ability ot input date/word from command line to get the respective word/date
 #compile list of all allowed guesses not in a common dictionary
 #probability updater
 #discrepancy updater
