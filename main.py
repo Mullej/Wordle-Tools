@@ -10,6 +10,7 @@ shuffled_real_wordles.txt -> 2315 wordle answers i.e. future_answers on day 0
 import list_operations as op
 import wordscrape as scrape
 import optimizer, verify
+import json
 
 def content_dictionary(file_names, /, *, dir='word_data'):
 
@@ -24,7 +25,24 @@ def content_dictionary(file_names, /, *, dir='word_data'):
             word_list.append(tuple(op.format_list(list(f))))
     
     return dict(zip(names, word_list))
-    
+
+#Fastest way to find the inverse of a map?
+#Use cases maybe
+def search_word_dates(search):
+    with open("word_data/word_dates.json") as j:
+        d1 = json.load(j)
+    a = d1.items()
+    d2 = {i[1]: i[0] for i in a}
+    try:
+        return d1[search]
+    except KeyError:
+        pass
+    try:
+        return d2[search]
+    except KeyError:
+        pass
+    return None
+        
 
 #needs to update discrepancies
 def update_lists():
@@ -67,16 +85,17 @@ if __name__ == '__main__':
         match sys.argv[1]:
             case 'update_lists':
                 update_lists()
-            case 'get_ideal_triple':
+            case 'triples':
                 print(get_ideal_triple(cd['future_answers']))
             case 'commands':
                 print('update_lists, get_ideal_triple')
+            case 'lookup':
+                print(search_word_dates(sys.argv[2]))
             case _:
                 print('Unrecognized arguments')
 
 
     verify_data()
-    print(get_ideal_triple(cd['future_answers'])) 
 
 #add ability ot input date/word from command line to get the respective word/date
 #compile list of all allowed guesses not in a common dictionary
