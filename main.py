@@ -94,10 +94,8 @@ if __name__ == '__main__':
             case _:
                 print('Unrecognized arguments')
 
-
     verify_data()
 
-#add ability ot input date/word from command line to get the respective word/date
 #compile list of all allowed guesses not in a common dictionary
 #probability updater
 #discrepancy updater
