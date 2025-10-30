@@ -26,23 +26,6 @@ def content_dictionary(file_names, /, *, dir='word_data'):
     
     return dict(zip(names, word_list))
 
-#Fastest way to find the inverse of a map?
-#Use cases maybe
-def search_word_dates(search):
-    with open("word_data/word_dates.json") as j:
-        d1 = json.load(j)
-    a = d1.items()
-    d2 = {i[1]: i[0] for i in a}
-    try:
-        return d1[search]
-    except KeyError:
-        pass
-    try:
-        return d2[search]
-    except KeyError:
-        pass
-    return None
-        
 
 #needs to update discrepancies
 def update_lists():
@@ -63,8 +46,6 @@ def NYT():
     global nyt_pastanswers
     nyt_pastanswers = NYTscraper.past_answers 
 
-def get_ideal_triple(future_answers):
-    return optimizer.IdealTriple(future_answers).ideal_triple()
 
 def verify_data():
     v = verify.WordListManager()
@@ -77,24 +58,21 @@ def verify_data():
 if __name__ == '__main__':
     FILES = ('combined_wordlist.txt', 'official_allowed_guesses.txt', 'past_answers.txt', 'shuffled_real_wordles.txt', 'discrepancies.txt', 'future_answers.txt')
     cd = content_dictionary(FILES) 
-
+    print(True)
     verify_data()
-    import sys
     
+    import sys
     if len(sys.argv) >= 2:
         match sys.argv[1]:
             case 'update_lists':
                 update_lists()
-            case 'triples':
-                print(get_ideal_triple(cd['future_answers']))
             case 'commands':
                 print('update_lists, get_ideal_triple')
-            case 'lookup':
-                print(search_word_dates(sys.argv[2]))
             case _:
                 print('Unrecognized arguments')
 
     verify_data()
+
 
 #compile list of all allowed guesses not in a common dictionary
 #probability updater
